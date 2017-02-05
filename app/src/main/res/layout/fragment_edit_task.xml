@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_task"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_gravity="center" android:orientation="vertical"  >
+
+    <TextView
+        android:id="@+id/lbl_subject" android:text="@string/editSubjectLabel"
+        android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/etSubject"
+        android:layout_width="match_parent"  android:layout_height="wrap_content"
+        android:inputType="text"
+        android:imeOptions="actionDone" />
+
+    <Button
+        android:text="Save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/btnSaveEditTask"
+        android:onClick="onSaveEditTask" />
+</LinearLayout>
