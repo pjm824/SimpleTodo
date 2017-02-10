@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">SimpleTodo</string>
     <string name="editSubjectLabel">Task</string>
+    <string name="saveButtonText">Save</string>
+    <string name="newTaskButtonText" >New Task</string>
+    <string name="radioHighPriorityLabel">High</string>
+    <string name="radioMediumPriorityLabel">Medium</string>
+    <string name="radioLowPriorityLabel">Low</string>
 </resources>

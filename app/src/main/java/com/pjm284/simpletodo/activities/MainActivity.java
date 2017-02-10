@@ -5,12 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.pjm284.simpletodo.R;
 import com.pjm284.simpletodo.models.Task;
-import com.pjm284.simpletodo.fragments.TaskDetailDialogFragment;
+import com.pjm284.simpletodo.fragments.EditTaskDialogFragment;
 import com.pjm284.simpletodo.adapters.TasksAdapter;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
@@ -65,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
                     Task task = tasks.get(pos);
 
                     FragmentManager fm = getSupportFragmentManager();
-                    TaskDetailDialogFragment taskDetailDialogFragment = TaskDetailDialogFragment.newInstance("Edit Task", task);
-                    taskDetailDialogFragment.show(fm, "fragment_edit_Task");
+                    EditTaskDialogFragment editTaskDialogFragment = EditTaskDialogFragment.newInstance("Edit Task", task);
+                    editTaskDialogFragment.show(fm, "fragment_edit_Task");
                 }
             }
         );
@@ -77,12 +78,16 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param v
      */
-    public void onSaveEditTask(View v) {
+    public void onSaveTask(View v) {
         FragmentManager fm = getSupportFragmentManager();
-        TaskDetailDialogFragment df = (TaskDetailDialogFragment) fm.findFragmentByTag("fragment_edit_Task");
+        EditTaskDialogFragment df = (EditTaskDialogFragment) fm.findFragmentByTag("fragment_edit_Task");
 
         Task task = df.getTask();
         task.setSubject(df.getEtSubject().getText().toString());
+        RadioGroup rg = df.getRgPriority();
+        int buttonId = rg.getCheckedRadioButtonId();
+        RadioButton prioritySelected = (RadioButton) rg.findViewById(buttonId);
+        task.setPriority(prioritySelected.getText().toString());
         task.save();
         tasksAdapter.notifyDataSetChanged();
         df.dismiss();
@@ -93,15 +98,12 @@ public class MainActivity extends AppCompatActivity {
      * @param v
      */
     public void onAddItem(View v) {
-        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
-        String itemText = etNewItem.getText().toString();
         Task task = new Task();
-        task.setSubject(itemText);
-        task.save();
-        this.tasksAdapter.add(task);
+        this.tasks.add(task);
 
-        // empty out input box
-        etNewItem.setText("");
+        FragmentManager fm = getSupportFragmentManager();
+        EditTaskDialogFragment editTaskDialogFragment = EditTaskDialogFragment.newInstance("Add Task", task);
+        editTaskDialogFragment.show(fm, "fragment_edit_Task");
     }
 
 }

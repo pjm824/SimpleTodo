@@ -9,6 +9,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import android.support.v4.app.DialogFragment;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.pjm284.simpletodo.R;
 import com.pjm284.simpletodo.models.Task;
@@ -18,7 +20,7 @@ import com.pjm284.simpletodo.models.Task;
  * Created by pauljmin on 2/4/17.
  */
 
-public class TaskDetailDialogFragment extends DialogFragment {
+public class EditTaskDialogFragment extends DialogFragment {
 
     /**
      * task that is being edited
@@ -30,14 +32,16 @@ public class TaskDetailDialogFragment extends DialogFragment {
      */
     private EditText etSubject;
 
-    public TaskDetailDialogFragment() {
+    private RadioGroup rgPriority;
+
+    public EditTaskDialogFragment() {
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
         // Use `newInstance` instead as shown below
     }
 
-    public static TaskDetailDialogFragment newInstance(String title, Task task) {
-        TaskDetailDialogFragment frag = new TaskDetailDialogFragment();
+    public static EditTaskDialogFragment newInstance(String title, Task task) {
+        EditTaskDialogFragment frag = new EditTaskDialogFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
         frag.setArguments(args);
@@ -61,6 +65,21 @@ public class TaskDetailDialogFragment extends DialogFragment {
         // fill in field with current value from task
         etSubject.setText(this.task.getSubject());
 
+        rgPriority = (RadioGroup) view.findViewById(R.id.rgPriority);
+
+        String priority = this.task.getPriority();
+
+        if (priority != null) {
+            if (priority.equals("Low")) {
+                rgPriority.check(R.id.rbPriorityLow);
+            } else if (priority.equals("Medium")) {
+                rgPriority.check(R.id.rbPriorityMedium);
+            } else if (priority.equals("High")) {
+                rgPriority.check(R.id.rbPriorityHigh);
+            }
+        }
+        
+
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title");
         getDialog().setTitle(title);
@@ -82,4 +101,6 @@ public class TaskDetailDialogFragment extends DialogFragment {
     public EditText getEtSubject() {
         return this.etSubject;
     }
+
+    public RadioGroup getRgPriority() { return this.rgPriority; }
 }

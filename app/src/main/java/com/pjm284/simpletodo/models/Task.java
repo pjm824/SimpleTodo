@@ -20,11 +20,22 @@ public class Task extends BaseModel {
     @Column
     String subject;
 
+    @Column
+    String priority;
+
     public String getSubject() {
         return this.subject;
     }
 
+    public String getPriority() {
+        return this.priority;
+    }
+
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

@@ -1,27 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/edit_task"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:layout_gravity="center" android:orientation="vertical"  >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical"  >
 
     <TextView
-        android:id="@+id/lbl_subject" android:text="@string/editSubjectLabel"
-        android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        android:id="@+id/lbl_subject"
+        android:text="@string/editSubjectLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/etSubject"
-        android:layout_width="match_parent"  android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:inputType="text"
         android:imeOptions="actionDone" />
 
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkedButton="@+id/rbPriorityHigh"
+        tools:orientation="horizontal"
+        android:id="@+id/rgPriority">
+
+        <RadioButton
+            android:text="@string/radioHighPriorityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbPriorityHigh"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="@string/radioMediumPriorityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbPriorityMedium"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="@string/radioLowPriorityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbPriorityLow"
+            android:layout_weight="1" />
+
+    </RadioGroup>
+
     <Button
-        android:text="Save"
+        android:text="@string/saveButtonText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/btnSaveEditTask"
-        android:onClick="onSaveEditTask" />
+        android:id="@+id/btnSaveTask"
+        android:onClick="onSaveTask" />
 </LinearLayout>
