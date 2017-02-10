@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -16,6 +17,7 @@ import com.pjm284.simpletodo.adapters.TasksAdapter;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,13 +85,36 @@ public class MainActivity extends AppCompatActivity {
         EditTaskDialogFragment df = (EditTaskDialogFragment) fm.findFragmentByTag("fragment_edit_Task");
 
         Task task = df.getTask();
-        task.setSubject(df.getEtSubject().getText().toString());
-        RadioGroup rg = df.getRgPriority();
-        int buttonId = rg.getCheckedRadioButtonId();
-        RadioButton prioritySelected = (RadioButton) rg.findViewById(buttonId);
-        task.setPriority(prioritySelected.getText().toString());
+
+        // Set Subject
+        task.setSubject(df.getSubjectField().getText().toString());
+
+        // Set Priority
+        RadioGroup priorityField = df.getPriorityField();
+        int buttonId = priorityField.getCheckedRadioButtonId();
+        RadioButton prioritySelected = (RadioButton) priorityField.findViewById(buttonId);
+
+        if (prioritySelected != null) {
+            task.setPriority(prioritySelected.getText().toString());
+        }
+
+        // Set Due Date
+        DatePicker dp = df.getDateField();
+        int month = dp.getMonth();
+        int day = dp.getDayOfMonth();
+        int year = dp.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        task.setDueDate(calendar);
+
+        // save task
         task.save();
+
+        // update the view to reflect changes
         tasksAdapter.notifyDataSetChanged();
+
+        // close the fragment
         df.dismiss();
     }
 

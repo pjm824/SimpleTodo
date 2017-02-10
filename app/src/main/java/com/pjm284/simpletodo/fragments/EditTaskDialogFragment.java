@@ -6,14 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import android.support.v4.app.DialogFragment;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.pjm284.simpletodo.R;
 import com.pjm284.simpletodo.models.Task;
+
+import java.util.Date;
 
 
 /**
@@ -32,7 +34,15 @@ public class EditTaskDialogFragment extends DialogFragment {
      */
     private EditText etSubject;
 
+    /**
+     * priority buttons
+     */
     private RadioGroup rgPriority;
+
+    /**
+     * Due date DatePicker
+     */
+    private DatePicker dpDueDate;
 
     public EditTaskDialogFragment() {
         // Empty constructor is required for DialogFragment
@@ -69,6 +79,7 @@ public class EditTaskDialogFragment extends DialogFragment {
 
         String priority = this.task.getPriority();
 
+        // if priority is set, check the correct button
         if (priority != null) {
             if (priority.equals("Low")) {
                 rgPriority.check(R.id.rbPriorityLow);
@@ -78,7 +89,8 @@ public class EditTaskDialogFragment extends DialogFragment {
                 rgPriority.check(R.id.rbPriorityHigh);
             }
         }
-        
+
+        dpDueDate = (DatePicker) view.findViewById(R.id.dpDueDate);
 
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title");
@@ -90,17 +102,23 @@ public class EditTaskDialogFragment extends DialogFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
+    public Task getTask() {
+        return this.task;
+    }
+
     public void setTask(Task task) {
         this.task = task;
     }
 
-    public Task getTask() {
-        return task;
-    }
-
-    public EditText getEtSubject() {
+    public EditText getSubjectField() {
         return this.etSubject;
     }
 
-    public RadioGroup getRgPriority() { return this.rgPriority; }
+    public RadioGroup getPriorityField() {
+        return this.rgPriority;
+    }
+
+    public DatePicker getDateField() {
+        return this.dpDueDate;
+    }
 }

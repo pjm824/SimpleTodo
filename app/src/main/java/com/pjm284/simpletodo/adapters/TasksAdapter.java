@@ -11,6 +11,8 @@ import com.pjm284.simpletodo.R;
 import com.pjm284.simpletodo.models.Task;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by pauljmin on 2/4/17.
@@ -31,15 +33,19 @@ public class TasksAdapter extends ArrayAdapter<Task> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_task, parent, false);
         }
 
-        // Lookup view for data population
+        // Set subject text view
         TextView tvTaskSubject = (TextView) convertView.findViewById(R.id.tvTaskSubject);
-
-        // Populate the data into the template view using the data object
         tvTaskSubject.setText(task.getSubject());
 
+        // Set priority text view
         TextView tvTaskPriority = (TextView) convertView.findViewById(R.id.tvTaskPriority);
-
         tvTaskPriority.setText(task.getPriority());
+
+        // Set due date text view
+        Calendar cal = task.getDueDate();
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM d yyyy");
+        TextView tvDueDate = (TextView) convertView.findViewById(R.id.tvDueDate);
+        tvDueDate.setText(formatter.format(cal.getTime()));
 
         // Return the completed view to render on screen
         return convertView;

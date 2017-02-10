@@ -51,6 +51,12 @@
 
     </RadioGroup>
 
+    <DatePicker
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:id="@+id/dpDueDate" />
+
     <Button
         android:text="@string/saveButtonText"
         android:layout_width="wrap_content"
