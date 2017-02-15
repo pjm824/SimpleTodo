@@ -22,6 +22,7 @@ public class EditTaskDialogFragment extends TaskDialogFragment {
         args.putString("title", title);
         frag.setArguments(args);
         frag.setTask(task);
+        frag.setHeaderString(TaskDialog.EDIT.getHeader());
         return frag;
     }
 

@@ -13,6 +13,8 @@ import com.pjm284.simpletodo.models.Task;
 
 public class NewTaskDialogFragment extends TaskDialogFragment {
 
+    protected String headerString = "New Task";
+
     public interface NewTaskDialogListener {
         void onFinishNewTaskDialog(Task task);
     }
@@ -27,6 +29,7 @@ public class NewTaskDialogFragment extends TaskDialogFragment {
 
         frag.setArguments(args);
         frag.setTask(task);
+        frag.setHeaderString(TaskDialog.NEW.getHeader());
         return frag;
     }
 

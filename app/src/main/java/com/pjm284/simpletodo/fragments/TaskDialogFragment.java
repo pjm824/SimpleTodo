@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 
 import android.support.v4.app.DialogFragment;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.pjm284.simpletodo.R;
@@ -26,6 +28,19 @@ import java.util.Calendar;
  */
 
 abstract public class TaskDialogFragment extends DialogFragment {
+
+    enum TaskDialog {
+        EDIT("Edit Task"), NEW("New Task");
+
+        String header;
+        TaskDialog(String s) {
+            this.header = s;
+        }
+
+        String getHeader() {
+            return this.header;
+        }
+    }
 
     /**
      * task that is being edited
@@ -46,6 +61,8 @@ abstract public class TaskDialogFragment extends DialogFragment {
      * Due date DatePicker
      */
     protected DatePicker dpDueDate;
+
+    protected String headerString;
 
     /**
      * Set up priority radio group toggle listener
@@ -91,12 +108,25 @@ abstract public class TaskDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // hide the header
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
         return inflater.inflate(R.layout.fragment_edit_task, container);
+    }
+
+    @Override
+    public void onResume() {
+        // fill the screen
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        super.onResume();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // update wording on custom header
+        this.updateHeaderString(view);
 
         // set up priority buttons
         RadioGroup rg = ((RadioGroup) view.findViewById(R.id.rgPriority));
@@ -202,6 +232,11 @@ abstract public class TaskDialogFragment extends DialogFragment {
         task.save();
     }
 
+    protected void updateHeaderString(View view) {
+        TextView taskHeader = ((TextView) view.findViewById(R.id.taskHeader));
+        taskHeader.setText(this.getHeaderString());
+    }
+
     public Task getTask() {
         return this.task;
     }
@@ -220,5 +255,13 @@ abstract public class TaskDialogFragment extends DialogFragment {
 
     public DatePicker getDateField() {
         return this.dpDueDate;
+    }
+
+    public String getHeaderString() {
+        return headerString;
+    }
+
+    public void setHeaderString(String headerString) {
+        this.headerString = headerString;
     }
 }
