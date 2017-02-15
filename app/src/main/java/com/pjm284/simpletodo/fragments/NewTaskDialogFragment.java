@@ -4,22 +4,27 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
+import com.pjm284.simpletodo.models.Priority;
 import com.pjm284.simpletodo.models.Task;
 
 /**
  * Created by pauljmin on 2/4/17.
  */
 
-public class EditTaskDialogFragment extends TaskDialogFragment {
+public class NewTaskDialogFragment extends TaskDialogFragment {
 
-    public interface EditTaskDialogListener {
-        void onFinishEditTaskDialog();
+    public interface NewTaskDialogListener {
+        void onFinishNewTaskDialog(Task task);
     }
 
-    public static EditTaskDialogFragment newInstance(String title, Task task) {
-        EditTaskDialogFragment frag = new EditTaskDialogFragment();
+    public static NewTaskDialogFragment newInstance(String title) {
+        NewTaskDialogFragment frag = new NewTaskDialogFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
+
+        Task task = new Task();
+        task.setPriority(Priority.Medium);
+
         frag.setArguments(args);
         frag.setTask(task);
         return frag;
@@ -29,12 +34,12 @@ public class EditTaskDialogFragment extends TaskDialogFragment {
         this.saveBtnListener = new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
-                EditTaskDialogFragment df = (EditTaskDialogFragment) fm.findFragmentByTag("fragment_edit_Task");
+                NewTaskDialogFragment df = (NewTaskDialogFragment) fm.findFragmentByTag("fragment_edit_Task");
                 df.saveTaskFromFields();
 
                 // call into the activity to update the adapter
-                EditTaskDialogListener listener = (EditTaskDialogListener) getActivity();
-                listener.onFinishEditTaskDialog();
+                NewTaskDialogListener listener = (NewTaskDialogListener) getActivity();
+                listener.onFinishNewTaskDialog(df.getTask());
 
                 // close the fragment
                 df.dismiss();

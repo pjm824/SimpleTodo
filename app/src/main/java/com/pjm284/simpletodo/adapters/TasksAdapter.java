@@ -1,6 +1,7 @@
 package com.pjm284.simpletodo.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.pjm284.simpletodo.R;
+import com.pjm284.simpletodo.models.Priority;
 import com.pjm284.simpletodo.models.Task;
 
 import java.util.ArrayList;
@@ -39,7 +41,9 @@ public class TasksAdapter extends ArrayAdapter<Task> {
 
         // Set priority text view
         TextView tvTaskPriority = (TextView) convertView.findViewById(R.id.tvTaskPriority);
-        tvTaskPriority.setText(task.getPriority());
+        Priority priority = task.getPriority();
+        tvTaskPriority.setText(priority.getName());
+        tvTaskPriority.setTextColor(Color.parseColor(priority.getColor()));
 
         // Set due date text view
         Calendar cal = task.getDueDate();

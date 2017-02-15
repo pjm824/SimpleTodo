@@ -5,27 +5,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.DatePicker;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.pjm284.simpletodo.R;
-import com.pjm284.simpletodo.models.Task;
+import com.pjm284.simpletodo.fragments.DeleteConfirmationAlertDialogFragment;
 import com.pjm284.simpletodo.fragments.EditTaskDialogFragment;
+import com.pjm284.simpletodo.fragments.NewTaskDialogFragment;
+import com.pjm284.simpletodo.models.Task;
 import com.pjm284.simpletodo.adapters.TasksAdapter;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
-
-    private final int REQUEST_CODE = 20;
+public class MainActivity extends AppCompatActivity implements EditTaskDialogFragment.EditTaskDialogListener, NewTaskDialogFragment.NewTaskDialogListener {
 
     ArrayList<Task> tasks;
     TasksAdapter tasksAdapter;
-    ListView lvItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,96 +35,70 @@ public class MainActivity extends AppCompatActivity {
         this.tasksAdapter = new TasksAdapter(this, tasks);
 
         // Attach the adapter to a ListView
-        lvItems = (ListView) findViewById(R.id.lvItems);
+        ListView lvItems = (ListView) findViewById(R.id.lvItems);
         lvItems.setAdapter(this.tasksAdapter);
 
-        setUpListViewListener();
-    }
+        // Set listview listeners
+        lvItems.setOnItemClickListener(taskItemClickListener);
+        lvItems.setOnItemLongClickListener(taskItemLongClickListener);
 
-    private void setUpListViewListener() {
-
-        // delete
-        lvItems.setOnItemLongClickListener(
-            new AdapterView.OnItemLongClickListener () {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id) {
-                    Task task = tasks.remove(pos);
-                    task.delete();
-                    tasksAdapter.notifyDataSetChanged();
-                    return true;
-                }
-            });
-
-        // open up edit fragment
-        lvItems.setOnItemClickListener(
-            new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
-                    //get the task that was selected
-                    Task task = tasks.get(pos);
-
-                    FragmentManager fm = getSupportFragmentManager();
-                    EditTaskDialogFragment editTaskDialogFragment = EditTaskDialogFragment.newInstance("Edit Task", task);
-                    editTaskDialogFragment.show(fm, "fragment_edit_Task");
-                }
-            }
-        );
+        // Set button listener
+        Button btnAddItem = (Button) findViewById(R.id.btnAddItem);
+        btnAddItem.setOnClickListener(addTaskBtnListener);
     }
 
     /**
-     * Save button on editTaskDialogFragment
-     *
-     * @param v
+     * onItemLongClickListener for deleting tasks
      */
-    public void onSaveTask(View v) {
-        FragmentManager fm = getSupportFragmentManager();
-        EditTaskDialogFragment df = (EditTaskDialogFragment) fm.findFragmentByTag("fragment_edit_Task");
-
-        Task task = df.getTask();
-
-        // Set Subject
-        task.setSubject(df.getSubjectField().getText().toString());
-
-        // Set Priority
-        RadioGroup priorityField = df.getPriorityField();
-        int buttonId = priorityField.getCheckedRadioButtonId();
-        RadioButton prioritySelected = (RadioButton) priorityField.findViewById(buttonId);
-
-        if (prioritySelected != null) {
-            task.setPriority(prioritySelected.getText().toString());
+    private AdapterView.OnItemLongClickListener taskItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id) {
+            DeleteConfirmationAlertDialogFragment deleteConfirm = DeleteConfirmationAlertDialogFragment.newInstance(pos);
+            deleteConfirm.show(getFragmentManager(), "dialog");
+            return true;
         }
-
-        // Set Due Date
-        DatePicker dp = df.getDateField();
-        int month = dp.getMonth();
-        int day = dp.getDayOfMonth();
-        int year = dp.getYear();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-        task.setDueDate(calendar);
-
-        // save task
-        task.save();
-
-        // update the view to reflect changes
-        tasksAdapter.notifyDataSetChanged();
-
-        // close the fragment
-        df.dismiss();
-    }
+    };
 
     /**
-     * Create new task
-     * @param v
+     * onItemClickListener for editing tasks
      */
-    public void onAddItem(View v) {
-        Task task = new Task();
-        this.tasks.add(task);
+    private AdapterView.OnItemClickListener taskItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
+            //get the task that was selected
+            Task task = tasks.get(pos);
 
-        FragmentManager fm = getSupportFragmentManager();
-        EditTaskDialogFragment editTaskDialogFragment = EditTaskDialogFragment.newInstance("Add Task", task);
-        editTaskDialogFragment.show(fm, "fragment_edit_Task");
+            FragmentManager fm = getSupportFragmentManager();
+            EditTaskDialogFragment editTaskDialogFragment = EditTaskDialogFragment.newInstance("Edit Task", task);
+            editTaskDialogFragment.show(fm, "fragment_edit_Task");
+        }
+    };
+
+    /**
+     * onClickListener for add task button
+     */
+    private View.OnClickListener addTaskBtnListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            FragmentManager fm = getSupportFragmentManager();
+            NewTaskDialogFragment newTaskDialogFragment = NewTaskDialogFragment.newInstance("Add Task");
+            newTaskDialogFragment.show(fm, "fragment_edit_Task");
+        }
+    };
+
+    @Override
+    public void onFinishEditTaskDialog() {
+        tasksAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onFinishNewTaskDialog(Task task) {
+        this.tasks.add(task);
+        tasksAdapter.notifyDataSetChanged();
+    }
+
+    public void deleteTask(int pos) {
+        Task task = tasks.remove(pos);
+        task.delete();
+        tasksAdapter.notifyDataSetChanged();
+    }
 }

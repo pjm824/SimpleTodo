@@ -1,69 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/edit_task"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:orientation="vertical"  >
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/lbl_subject"
-        android:text="@string/editSubjectLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:id="@+id/etSubject"
+    <LinearLayout
+        android:id="@+id/editBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:imeOptions="actionDone" />
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp" >
 
-    <RadioGroup
+        <TextView
+            android:id="@+id/lbl_subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:color="@android:color/white"
+            android:text="@string/editSubjectLabel" />
+
+        <EditText
+            android:id="@+id/etSubject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_view"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:imeOptions="actionDone" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/darkGrey" />
+
+        <TextView
+            android:id="@+id/lbl_priority"
+            android:text="@string/priorityHeaderLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:color="@android:color/white" />
+
+        <RadioGroup
+            android:id="@+id/rgPriority"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ToggleButton
+                android:id="@+id/btnPriorityLow"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_weight="1"
+                android:textOn="@string/radioLowPriorityLabel"
+                android:textOff="@string/radioLowPriorityLabel"
+                android:textSize="14sp"
+                android:checked="true" />
+
+            <ToggleButton
+                android:id="@+id/btnPriorityMedium"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textOn="@string/radioMediumPriorityLabel"
+                android:textOff="@string/radioMediumPriorityLabel" />
+
+            <ToggleButton
+                android:id="@+id/btnPriorityHigh"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textOn="@string/radioHighPriorityLabel"
+                android:textOff="@string/radioHighPriorityLabel" />
+
+        </RadioGroup>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/darkGrey" />
+
+        <TextView
+            android:id="@+id/lbl_dueDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dueDateLabel"
+            android:color="@android:color/white" />
+
+        <DatePicker
+            android:id="@+id/dpDueDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:checkedButton="@+id/rbPriorityHigh"
-        tools:orientation="horizontal"
-        android:id="@+id/rgPriority">
+        android:orientation="horizontal" >
 
-        <RadioButton
-            android:text="@string/radioHighPriorityLabel"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_weight=".50"
             android:layout_height="wrap_content"
-            android:id="@+id/rbPriorityHigh"
-            android:layout_weight="1" />
+            android:background="@color/white"
+            android:text="@string/cancelButtonText" />
 
-        <RadioButton
-            android:text="@string/radioMediumPriorityLabel"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btnSaveTask"
+            android:layout_width="0dp"
+            android:layout_weight=".50"
             android:layout_height="wrap_content"
-            android:id="@+id/rbPriorityMedium"
-            android:layout_weight="1" />
+            android:background="@color/colorPrimary"
+            android:text="@string/saveButtonText"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
-        <RadioButton
-            android:text="@string/radioLowPriorityLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/rbPriorityLow"
-            android:layout_weight="1" />
-
-    </RadioGroup>
-
-    <DatePicker
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:id="@+id/dpDueDate" />
-
-    <Button
-        android:text="@string/saveButtonText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/btnSaveTask"
-        android:onClick="onSaveTask" />
 </LinearLayout>

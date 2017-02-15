@@ -2,8 +2,13 @@
     <string name="app_name">SimpleTodo</string>
     <string name="editSubjectLabel">Task</string>
     <string name="saveButtonText">Save</string>
+    <string name="cancelButtonText">Cancel</string>
+    <string name="okButtonText">Ok</string>
     <string name="newTaskButtonText" >New Task</string>
     <string name="radioHighPriorityLabel">High</string>
     <string name="radioMediumPriorityLabel">Medium</string>
     <string name="radioLowPriorityLabel">Low</string>
+    <string name="priorityHeaderLabel">Priority</string>
+    <string name="dueDateLabel">Due Date</string>
+    <string name="delete_confirmation">Are you sure you want to delete this task?</string>
 </resources>
