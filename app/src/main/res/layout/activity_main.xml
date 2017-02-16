@@ -9,13 +9,12 @@
 
     <Button
         android:text="@string/newTaskButtonText"
+        style="@style/positiveButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/white"
         android:id="@+id/btnAddItem" />
 
     <ListView

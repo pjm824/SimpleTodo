@@ -8,12 +8,7 @@
 
     <TextView
         android:id="@+id/taskHeader"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:textSize="25dp"
-        android:padding="20dp"
-        android:textColor="@color/white"
+        style="@style/headerTextView"
         android:layout_alignParentTop="true"
         android:text="@string/taskHeaderLabel" />
 
@@ -30,32 +25,22 @@
             android:id="@+id/lbl_subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:color="@android:color/white"
             android:text="@string/editSubjectLabel" />
 
         <EditText
             android:id="@+id/etSubject"
+            style="@style/editTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/edit_view"
-            android:inputType="text"
-            android:padding="10dp"
-            android:textSize="15sp"
             android:imeOptions="actionDone" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/darkGrey" />
+        <View style="@style/sectionSeparator" />
 
         <TextView
             android:id="@+id/lbl_priority"
-            android:text="@string/priorityHeaderLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:color="@android:color/white" />
+            android:text="@string/priorityHeaderLabel" />
 
         <RadioGroup
             android:id="@+id/rgPriority"
@@ -93,19 +78,13 @@
 
         </RadioGroup>
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/darkGrey" />
+        <View style="@style/sectionSeparator" />
 
         <TextView
             android:id="@+id/lbl_dueDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dueDateLabel"
-            android:color="@android:color/white" />
+            android:text="@string/dueDateLabel" />
 
         <DatePicker
             android:id="@+id/dpDueDate"
@@ -119,25 +98,18 @@
         android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/btnCancel"
-            android:layout_width="0dp"
-            android:layout_weight=".50"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
+            style="@style/negativeButton.halfWidth"
             android:text="@string/cancelButtonText" />
 
         <Button
             android:id="@+id/btnSaveTask"
-            android:layout_width="0dp"
-            android:layout_weight=".50"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:text="@string/saveButtonText"
-            android:textColor="@color/white" />
+            style="@style/positiveButton.halfWidth"
+            android:text="@string/saveButtonText" />
     </LinearLayout>
 
 </RelativeLayout>
