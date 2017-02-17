@@ -32,6 +32,9 @@ public class Task extends BaseModel {
     @Column
     Date dueTimestamp;
 
+    @Column(defaultValue = "0")
+    int status;
+
     public String getSubject() {
         return this.subject;
     }
@@ -59,5 +62,13 @@ public class Task extends BaseModel {
 
     public void setDueDate(Calendar cal) {
         this.dueTimestamp = cal.getTime();
+    }
+
+    public Status getStatus() {
+        return Status.findByDbValue(this.status);
+    }
+
+    public void setStatus(Status status) {
+        this.status = status.getDbValue();
     }
 }

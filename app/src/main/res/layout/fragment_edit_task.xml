@@ -50,29 +50,20 @@
 
             <ToggleButton
                 android:id="@+id/btnPriorityLow"
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
-                android:layout_weight="1"
+                style="@style/priorityToggleButton.low"
                 android:textOn="@string/radioLowPriorityLabel"
                 android:textOff="@string/radioLowPriorityLabel"
-                android:textSize="14sp"
                 android:checked="true" />
 
             <ToggleButton
                 android:id="@+id/btnPriorityMedium"
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
-                android:layout_weight="1"
-                android:textSize="14sp"
+                style="@style/priorityToggleButton.medium"
                 android:textOn="@string/radioMediumPriorityLabel"
                 android:textOff="@string/radioMediumPriorityLabel" />
 
             <ToggleButton
                 android:id="@+id/btnPriorityHigh"
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
-                android:layout_weight="1"
-                android:textSize="14sp"
+                style="@style/priorityToggleButton.high"
                 android:textOn="@string/radioHighPriorityLabel"
                 android:textOff="@string/radioHighPriorityLabel" />
 
