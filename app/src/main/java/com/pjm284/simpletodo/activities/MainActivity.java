@@ -3,17 +3,20 @@ package com.pjm284.simpletodo.activities;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 
 import com.pjm284.simpletodo.R;
 import com.pjm284.simpletodo.fragments.DeleteConfirmationAlertDialogFragment;
 import com.pjm284.simpletodo.fragments.EditTaskDialogFragment;
 import com.pjm284.simpletodo.fragments.NewTaskDialogFragment;
+import com.pjm284.simpletodo.models.Status;
 import com.pjm284.simpletodo.models.Task;
 import com.pjm284.simpletodo.adapters.TasksAdapter;
+import com.pjm284.simpletodo.models.Task_Table;
+import com.pjm284.simpletodo.util.ItemClickSupport;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
@@ -21,28 +24,36 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements EditTaskDialogFragment.EditTaskDialogListener, NewTaskDialogFragment.NewTaskDialogListener {
 
     ArrayList<Task> tasks;
-    TasksAdapter tasksAdapter;
+    TasksAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Construct the data source
-        this.tasks = (ArrayList<Task>) SQLite.select().from(Task.class).queryList();
+        // get tasks that aren't marked as done
+        this.tasks = (ArrayList<Task>) SQLite.select()
+                .from(Task.class)
+                .where(Task_Table.status.is(Status.Todo.getDbValue()))
+                .queryList();
 
-        // Create the adapter to convert the array to views
-        this.tasksAdapter = new TasksAdapter(this, tasks);
+        // Lookup the recyclerview in activity layout
+        RecyclerView rvTasks = (RecyclerView) findViewById(R.id.rvTasks);
 
-        // Attach the adapter to a ListView
-        ListView lvItems = (ListView) findViewById(R.id.lvItems);
-        lvItems.setAdapter(this.tasksAdapter);
+        // Create adapter for tasks
+        adapter = new TasksAdapter(this, tasks);
 
-        // Set listview listeners
-        lvItems.setOnItemClickListener(taskItemClickListener);
-        lvItems.setOnItemLongClickListener(taskItemLongClickListener);
+        // Attach the adapter to the recyclerview to populate items
+        rvTasks.setAdapter(adapter);
 
-        // Set button listener
+        // Set layout manager to position the items
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+
+        // set tasks click listeners
+        ItemClickSupport.addTo(rvTasks).setOnItemClickListener(taskItemClickListener);
+        ItemClickSupport.addTo(rvTasks).setOnItemLongClickListener(taskItemLongClickListener);
+
+        // add button listener for the new task button
         Button btnAddItem = (Button) findViewById(R.id.btnAddItem);
         btnAddItem.setOnClickListener(addTaskBtnListener);
     }
@@ -50,10 +61,10 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
     /**
      * onItemLongClickListener for deleting tasks
      */
-    private AdapterView.OnItemLongClickListener taskItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+    private ItemClickSupport.OnItemLongClickListener taskItemLongClickListener = new ItemClickSupport.OnItemLongClickListener() {
         @Override
-        public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id) {
-            DeleteConfirmationAlertDialogFragment deleteConfirm = DeleteConfirmationAlertDialogFragment.newInstance(pos);
+        public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
+            DeleteConfirmationAlertDialogFragment deleteConfirm = DeleteConfirmationAlertDialogFragment.newInstance(position);
             deleteConfirm.show(getFragmentManager(), "dialog");
             return true;
         }
@@ -62,11 +73,11 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
     /**
      * onItemClickListener for editing tasks
      */
-    private AdapterView.OnItemClickListener taskItemClickListener = new AdapterView.OnItemClickListener() {
+    private ItemClickSupport.OnItemClickListener taskItemClickListener = new ItemClickSupport.OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
+        public void onItemClicked(RecyclerView recyclerView, int position, View v) {
             //get the task that was selected
-            Task task = tasks.get(pos);
+            Task task = tasks.get(position);
 
             FragmentManager fm = getSupportFragmentManager();
             EditTaskDialogFragment editTaskDialogFragment = EditTaskDialogFragment.newInstance("Edit Task", task);
@@ -87,18 +98,18 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
 
     @Override
     public void onFinishEditTaskDialog() {
-        tasksAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onFinishNewTaskDialog(Task task) {
         this.tasks.add(task);
-        tasksAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     public void deleteTask(int pos) {
         Task task = tasks.remove(pos);
         task.delete();
-        tasksAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 }
