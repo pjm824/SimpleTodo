@@ -8,11 +8,6 @@ import android.support.v7.app.AlertDialog;
 
 import com.pjm284.simpletodo.R;
 import com.pjm284.simpletodo.activities.MainActivity;
-import com.pjm284.simpletodo.models.Task;
-
-/**
- * Created by pauljmin on 2/14/17.
- */
 
 public class DeleteConfirmationAlertDialogFragment extends DialogFragment {
 

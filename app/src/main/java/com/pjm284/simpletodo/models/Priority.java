@@ -1,9 +1,5 @@
 package com.pjm284.simpletodo.models;
 
-/**
- * Created by pauljmin on 2/13/17.
- */
-
 public enum Priority {
     Low("Low", "BLUE"),
     Medium("Medium", "#E5E500"),

@@ -23,10 +23,6 @@ import com.pjm284.simpletodo.models.Task;
 
 import java.util.Calendar;
 
-/**
- * Created by pauljmin on 2/4/17.
- */
-
 abstract public class TaskDialogFragment extends DialogFragment {
 
     enum TaskDialog {

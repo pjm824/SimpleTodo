@@ -5,11 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Button;
 
 import com.pjm284.simpletodo.R;
-import com.pjm284.simpletodo.fragments.DeleteConfirmationAlertDialogFragment;
 import com.pjm284.simpletodo.fragments.EditTaskDialogFragment;
 import com.pjm284.simpletodo.fragments.NewTaskDialogFragment;
 import com.pjm284.simpletodo.models.Status;
@@ -17,6 +17,7 @@ import com.pjm284.simpletodo.models.Task;
 import com.pjm284.simpletodo.adapters.TasksAdapter;
 import com.pjm284.simpletodo.models.Task_Table;
 import com.pjm284.simpletodo.util.ItemClickSupport;
+import com.pjm284.simpletodo.util.TaskTouchHelper;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
@@ -49,26 +50,18 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
         // Set layout manager to position the items
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
 
+        // set up touchhelper for swipe to delete/done
+        ItemTouchHelper.Callback callback = new TaskTouchHelper(adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(rvTasks);
+
         // set tasks click listeners
         ItemClickSupport.addTo(rvTasks).setOnItemClickListener(taskItemClickListener);
-        ItemClickSupport.addTo(rvTasks).setOnItemLongClickListener(taskItemLongClickListener);
 
         // add button listener for the new task button
         Button btnAddItem = (Button) findViewById(R.id.btnAddItem);
         btnAddItem.setOnClickListener(addTaskBtnListener);
     }
-
-    /**
-     * onItemLongClickListener for deleting tasks
-     */
-    private ItemClickSupport.OnItemLongClickListener taskItemLongClickListener = new ItemClickSupport.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
-            DeleteConfirmationAlertDialogFragment deleteConfirm = DeleteConfirmationAlertDialogFragment.newInstance(position);
-            deleteConfirm.show(getFragmentManager(), "dialog");
-            return true;
-        }
-    };
 
     /**
      * onItemClickListener for editing tasks
@@ -93,6 +86,15 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
             FragmentManager fm = getSupportFragmentManager();
             NewTaskDialogFragment newTaskDialogFragment = NewTaskDialogFragment.newInstance("Add Task");
             newTaskDialogFragment.show(fm, "fragment_edit_Task");
+        }
+    };
+
+    /**
+     * onClickListener for undo done
+     */
+    public View.OnClickListener undoDoneBtnListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
         }
     };
 

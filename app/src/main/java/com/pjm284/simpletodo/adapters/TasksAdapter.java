@@ -2,6 +2,8 @@ package com.pjm284.simpletodo.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,18 +11,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pjm284.simpletodo.R;
+import com.pjm284.simpletodo.activities.MainActivity;
+import com.pjm284.simpletodo.fragments.NewTaskDialogFragment;
 import com.pjm284.simpletodo.models.Priority;
+import com.pjm284.simpletodo.models.Status;
 import com.pjm284.simpletodo.models.Task;
+import com.pjm284.simpletodo.models.Task_Table;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-/**
- * Created by pauljmin on 2/4/17.
- */
-
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
+
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvTaskSubject;
         public TextView tvTaskPriority;
@@ -47,11 +53,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         mContext = context;
     }
 
-    // Easy access to the context object in the recyclerview
-    private Context getContext() {
-        return mContext;
-    }
-
     @Override
     public TasksAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -61,8 +62,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         View taskView = inflater.inflate(R.layout.item_task, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(taskView);
-        return viewHolder;
+        return new ViewHolder(taskView);
     }
 
     // Involves populating data into the item through holder
@@ -81,7 +81,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         tvTaskPriority.setTextColor(Color.parseColor(priority.getColor()));
 
         Calendar cal = task.getDueDate();
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM d yyyy");
+        DateFormat formatter = SimpleDateFormat.getDateInstance();
         TextView tvDueDate = viewHolder.tvDueDate;
         tvDueDate.setText(formatter.format(cal.getTime()));
     }
@@ -90,5 +90,31 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return mTasks.size();
+    }
+
+    public void remove(int position) {
+        Task task = mTasks.remove(position);
+        task.delete();
+        notifyItemRemoved(position);
+    }
+
+    public void setAsDone(int position) {
+        Task task = mTasks.get(position);
+        task.setStatus(Status.Done);
+        task.save();
+        // TODO see I can use notifyItemRemoved instead of notifyDataSetChanged
+        mTasks.clear();
+        mTasks.addAll(SQLite.select().from(Task.class).where(Task_Table.status.is(0)).queryList());
+        notifyDataSetChanged();
+
+        Snackbar.make(((MainActivity)getContext()).findViewById(R.id.rvTasks), R.string.markedDone, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, ((MainActivity)getContext()).undoDoneBtnListener)
+                .show();
+    }
+
+
+
+    public Context getContext() {
+        return this.mContext;
     }
 }

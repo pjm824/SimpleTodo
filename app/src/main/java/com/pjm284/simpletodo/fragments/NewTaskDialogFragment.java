@@ -7,14 +7,8 @@ import android.view.View;
 import com.pjm284.simpletodo.models.Priority;
 import com.pjm284.simpletodo.models.Task;
 
-/**
- * Created by pauljmin on 2/4/17.
- */
-
 public class NewTaskDialogFragment extends TaskDialogFragment {
-
-    protected String headerString = "New Task";
-
+    
     public interface NewTaskDialogListener {
         void onFinishNewTaskDialog(Task task);
     }

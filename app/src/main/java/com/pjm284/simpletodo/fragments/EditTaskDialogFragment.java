@@ -6,10 +6,6 @@ import android.view.View;
 
 import com.pjm284.simpletodo.models.Task;
 
-/**
- * Created by pauljmin on 2/4/17.
- */
-
 public class EditTaskDialogFragment extends TaskDialogFragment {
 
     public interface EditTaskDialogListener {
