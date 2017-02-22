@@ -1,14 +1,16 @@
 package com.pjm284.simpletodo.models;
 
+import com.pjm284.simpletodo.R;
+
 public enum Priority {
-    Low("Low", "BLUE"),
-    Medium("Medium", "#E5E500"),
-    High("High", "#E50000");
+    Low("Low", R.color.priorityBlue),
+    Medium("Medium", R.color.priorityYellow),
+    High("High", R.color.priorityRed);
 
     private final String name;
-    private final String color;
+    private final int color;
 
-    private Priority(String name, String color) {
+    private Priority(String name, int color) {
         this.name = name;
         this.color = color;
     }
@@ -17,7 +19,7 @@ public enum Priority {
         return this.name;
     }
 
-    public String getColor() {
+    public int getColor() {
         return this.color;
     }
 }

@@ -3,6 +3,7 @@ package com.pjm284.simpletodo.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +77,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         Priority priority = task.getPriority();
         TextView tvTaskPriority = viewHolder.tvTaskPriority;
         tvTaskPriority.setText(priority.getName());
-        tvTaskPriority.setTextColor(Color.parseColor(priority.getColor()));
+        tvTaskPriority.setTextColor(ContextCompat.getColor(getContext(), priority.getColor()));
 
         Calendar cal = task.getDueDate();
         DateFormat formatter = SimpleDateFormat.getDateInstance();

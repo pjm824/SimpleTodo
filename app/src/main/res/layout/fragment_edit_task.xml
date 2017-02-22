@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <!--<TextView-->
-        <!--android:id="@+id/taskHeader"-->
-        <!--style="@style/headerTextView"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:text="@string/taskHeaderLabel" />-->
-
     <LinearLayout
         android:id="@+id/editBody"
         android:layout_width="match_parent"
