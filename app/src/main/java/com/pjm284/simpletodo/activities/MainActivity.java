@@ -1,6 +1,6 @@
 package com.pjm284.simpletodo.activities;
 
-import android.support.v4.app.FragmentManager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.pjm284.simpletodo.R;
-import com.pjm284.simpletodo.fragments.EditTaskDialogFragment;
-import com.pjm284.simpletodo.fragments.NewTaskDialogFragment;
 import com.pjm284.simpletodo.models.Status;
 import com.pjm284.simpletodo.models.Task;
 import com.pjm284.simpletodo.adapters.TasksAdapter;
@@ -22,7 +20,10 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements EditTaskDialogFragment.EditTaskDialogListener, NewTaskDialogFragment.NewTaskDialogListener {
+public class MainActivity extends AppCompatActivity {
+
+    final int NEW_TASK_REQUEST = 1;
+    final int EDIT_TASK_REQUEST = 2;
 
     ArrayList<Task> tasks;
     TasksAdapter adapter;
@@ -69,12 +70,11 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
     private ItemClickSupport.OnItemClickListener taskItemClickListener = new ItemClickSupport.OnItemClickListener() {
         @Override
         public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-            //get the task that was selected
+            Intent i = new Intent(MainActivity.this, EditTaskActivity.class);
             Task task = tasks.get(position);
-
-            FragmentManager fm = getSupportFragmentManager();
-            EditTaskDialogFragment editTaskDialogFragment = EditTaskDialogFragment.newInstance("Edit Task", task);
-            editTaskDialogFragment.show(fm, "fragment_edit_Task");
+            i.putExtra("position", position);
+            i.putExtra("task", task);
+            startActivityForResult(i, EDIT_TASK_REQUEST);
         }
     };
 
@@ -83,9 +83,8 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
      */
     private View.OnClickListener addTaskBtnListener = new View.OnClickListener() {
         public void onClick(View v) {
-            FragmentManager fm = getSupportFragmentManager();
-            NewTaskDialogFragment newTaskDialogFragment = NewTaskDialogFragment.newInstance("Add Task");
-            newTaskDialogFragment.show(fm, "fragment_edit_Task");
+            Intent i = new Intent(MainActivity.this, NewTaskActivity.class);
+            startActivityForResult(i, NEW_TASK_REQUEST);
         }
     };
 
@@ -98,20 +97,24 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
         }
     };
 
-    @Override
-    public void onFinishEditTaskDialog() {
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onFinishNewTaskDialog(Task task) {
-        this.tasks.add(task);
-        adapter.notifyDataSetChanged();
-    }
-
     public void deleteTask(int pos) {
         Task task = tasks.remove(pos);
         task.delete();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
+            int position = data.getIntExtra("position", -1);
+            Task task = (Task) data.getSerializableExtra("task");
+            this.tasks.set(position, task);
+            this.adapter.notifyItemChanged(position);
+        } else if (requestCode == NEW_TASK_REQUEST && resultCode == RESULT_OK) {
+            Task task = (Task) data.getSerializableExtra("task");
+            this.tasks.add(task);
+            this.adapter.notifyItemInserted(this.tasks.indexOf(task));
+        }
     }
 }

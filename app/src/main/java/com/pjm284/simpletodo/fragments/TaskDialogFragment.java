@@ -2,19 +2,16 @@ package com.pjm284.simpletodo.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-
-import android.support.v4.app.DialogFragment;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.pjm284.simpletodo.R;
@@ -23,19 +20,10 @@ import com.pjm284.simpletodo.models.Task;
 
 import java.util.Calendar;
 
-abstract public class TaskDialogFragment extends DialogFragment {
+public class TaskDialogFragment extends DialogFragment {
 
-    enum TaskDialog {
-        EDIT("Edit Task"), NEW("New Task");
-
-        String header;
-        TaskDialog(String s) {
-            this.header = s;
-        }
-
-        String getHeader() {
-            return this.header;
-        }
+    public interface TaskDialogListener {
+        void onFinishTaskDialog();
     }
 
     /**
@@ -58,11 +46,31 @@ abstract public class TaskDialogFragment extends DialogFragment {
      */
     protected DatePicker dpDueDate;
 
-    protected String headerString;
+    protected View.OnClickListener saveBtnListener =  new View.OnClickListener() {
+        public void onClick(View v) {
+            FragmentManager fm = getFragmentManager();
+            TaskDialogFragment df = (TaskDialogFragment) fm.findFragmentByTag("fragment_edit_Task");
+            df.saveTaskFromFields();
 
-    /**
-     * Set up priority radio group toggle listener
-     */
+            // call into the activity to update the adapter
+            TaskDialogListener listener = (TaskDialogListener) getActivity();
+            listener.onFinishTaskDialog();
+        }
+    };
+
+    protected View.OnClickListener priorityBtnListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            ((RadioGroup)v.getParent()).check(0);
+            ((RadioGroup)v.getParent()).check(v.getId());
+        }
+    };
+
+    protected View.OnClickListener cancelBtnListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            getActivity().finish();
+        }
+    };
+
     protected RadioGroup.OnCheckedChangeListener ToggleListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(final RadioGroup radioGroup, final int i) {
@@ -73,56 +81,49 @@ abstract public class TaskDialogFragment extends DialogFragment {
         }
     };
 
-    /**
-     * On click listener for priority buttons
-     */
-    protected View.OnClickListener priorityBtnListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            ((RadioGroup)v.getParent()).check(0);
-            ((RadioGroup)v.getParent()).check(v.getId());
-        }
-    };
-
-    protected View.OnClickListener cancelBtnListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            FragmentManager fm = getFragmentManager();
-            TaskDialogFragment df = (TaskDialogFragment) fm.findFragmentByTag("fragment_edit_Task");
-            df.dismiss();
-        }
-    };
-
-    protected View.OnClickListener saveBtnListener;
-
     public TaskDialogFragment() {
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
         // Use `newInstance` instead as shown below
     }
 
-    abstract void setSaveBtnListener();
+    public static TaskDialogFragment newInstance(Task task) {
+        TaskDialogFragment frag = new TaskDialogFragment();
+        frag.setTask(task);
+        return frag;
+    }
+
+    public Task getTask() {
+        return this.task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public EditText getSubjectField() {
+        return this.etSubject;
+    }
+
+    public RadioGroup getPriorityField() {
+        return this.rgPriority;
+    }
+
+    public DatePicker getDateField() {
+        return this.dpDueDate;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // hide the header
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-        return inflater.inflate(R.layout.fragment_edit_task, container);
+        return inflater.inflate(R.layout.fragment_edit_task, container, false);
     }
 
-    @Override
-    public void onResume() {
-        // fill the screen
-        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        super.onResume();
-    }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // update wording on custom header
-        this.updateHeaderString(view);
 
         // set up priority buttons
         RadioGroup rg = ((RadioGroup) view.findViewById(R.id.rgPriority));
@@ -132,19 +133,14 @@ abstract public class TaskDialogFragment extends DialogFragment {
         this.fillFields(view);
 
         Button btnSaveTask = (Button) view.findViewById(R.id.btnSaveTask);
-        this.setSaveBtnListener();
         btnSaveTask.setOnClickListener(saveBtnListener);
 
         Button btnCancel = (Button) view.findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(cancelBtnListener);
 
-        // Fetch arguments from bundle and set title
-        String title = getArguments().getString("title");
-        getDialog().setTitle(title);
-
         // Show soft keyboard automatically and request focus to field
         etSubject.requestFocus();
-        getDialog().getWindow().setSoftInputMode(
+        getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
@@ -226,38 +222,5 @@ abstract public class TaskDialogFragment extends DialogFragment {
 
         // save task
         task.save();
-    }
-
-    protected void updateHeaderString(View view) {
-        TextView taskHeader = ((TextView) view.findViewById(R.id.taskHeader));
-        taskHeader.setText(this.getHeaderString());
-    }
-
-    public Task getTask() {
-        return this.task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
-    public EditText getSubjectField() {
-        return this.etSubject;
-    }
-
-    public RadioGroup getPriorityField() {
-        return this.rgPriority;
-    }
-
-    public DatePicker getDateField() {
-        return this.dpDueDate;
-    }
-
-    public String getHeaderString() {
-        return headerString;
-    }
-
-    public void setHeaderString(String headerString) {
-        this.headerString = headerString;
     }
 }

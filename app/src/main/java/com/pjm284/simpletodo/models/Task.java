@@ -8,6 +8,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,7 +18,7 @@ import java.util.GregorianCalendar;
  */
 
 @Table(database = SimpleTodoDatabase.class)
-public class Task extends BaseModel {
+public class Task extends BaseModel implements Serializable {
 
     @PrimaryKey(autoincrement = true)
     @Column

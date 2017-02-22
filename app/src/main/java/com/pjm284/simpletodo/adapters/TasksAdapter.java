@@ -3,7 +3,6 @@ package com.pjm284.simpletodo.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import com.pjm284.simpletodo.R;
 import com.pjm284.simpletodo.activities.MainActivity;
-import com.pjm284.simpletodo.fragments.NewTaskDialogFragment;
 import com.pjm284.simpletodo.models.Priority;
 import com.pjm284.simpletodo.models.Status;
 import com.pjm284.simpletodo.models.Task;
@@ -96,6 +94,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         Task task = mTasks.remove(position);
         task.delete();
         notifyItemRemoved(position);
+//        DeleteConfirmationAlertDialogFragment deleteConfirm = DeleteConfirmationAlertDialogFragment.newInstance(position);
+//        deleteConfirm.show(getFragmentManager(), "dialog");
     }
 
     public void setAsDone(int position) {
