@@ -1,5 +1,6 @@
 package com.pjm284.simpletodo.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,10 +19,12 @@ public class TaskTouchHelper extends ItemTouchHelper.SimpleCallback {
     private static final int RIGHT = 8;
 
     private TasksAdapter mtaskAdapter;
+    private Context mcontext;
 
-    public TaskTouchHelper(TasksAdapter taskAdapter){
+    public TaskTouchHelper(TasksAdapter taskAdapter, Context context){
         super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.mtaskAdapter = taskAdapter;
+        this.mcontext = context;
     }
 
     @Override
@@ -34,9 +37,9 @@ public class TaskTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         //Remove task
         if (direction == RIGHT) {
-            mtaskAdapter.remove(viewHolder.getAdapterPosition());
+            mtaskAdapter.queueToRemove(viewHolder);
         } else if (direction == LEFT) { // mark task as done
-            mtaskAdapter.setAsDone(viewHolder.getAdapterPosition());
+            mtaskAdapter.queueToDone(viewHolder);
         }
     }
 

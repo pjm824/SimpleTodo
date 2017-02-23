@@ -16,7 +16,7 @@ public enum Status {
     }
 
     static {
-        map = new SparseArray<Status>();
+        map = new SparseArray<>();
         for (Status v : Status.values()) {
             map.put(v.dbValue, v);
         }

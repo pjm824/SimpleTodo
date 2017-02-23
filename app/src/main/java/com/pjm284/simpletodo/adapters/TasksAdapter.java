@@ -1,7 +1,7 @@
 package com.pjm284.simpletodo.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +15,9 @@ import com.pjm284.simpletodo.activities.MainActivity;
 import com.pjm284.simpletodo.models.Priority;
 import com.pjm284.simpletodo.models.Status;
 import com.pjm284.simpletodo.models.Task;
-import com.pjm284.simpletodo.models.Task_Table;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -26,12 +25,12 @@ import java.util.List;
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvTaskSubject;
-        public TextView tvTaskPriority;
-        public TextView tvDueDate;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTaskSubject;
+        TextView tvTaskPriority;
+        TextView tvDueDate;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             tvTaskSubject = (TextView) itemView.findViewById(R.id.tvTaskSubject);
@@ -43,6 +42,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     // Store a member variable for the tasks
     private List<Task> mTasks;
 
+    // queue of tasks to delete
+    private List<Task> tasksToDelete;
+
+    // queue of tasks to mark as done
+    private List<Task> tasksToDone;
+
     // Store the context for easy access
     private Context mContext;
 
@@ -50,6 +55,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     public TasksAdapter(Context context, List<Task> tasks) {
         mTasks = tasks;
         mContext = context;
+        tasksToDelete = new ArrayList<>();
+        tasksToDone = new ArrayList<>();
     }
 
     @Override
@@ -73,6 +80,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         // Set item views based on your views and data model
         TextView tvTaskSubject = viewHolder.tvTaskSubject;
         tvTaskSubject.setText(task.getSubject());
+        // strikethrough tasks that are done
+        if (task.getStatus() == Status.Done) {
+            tvTaskSubject.setPaintFlags(tvTaskSubject.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            tvTaskSubject.setPaintFlags(tvTaskSubject.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+        }
 
         Priority priority = task.getPriority();
         TextView tvTaskPriority = viewHolder.tvTaskPriority;
@@ -85,37 +98,61 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         tvDueDate.setText(formatter.format(cal.getTime()));
     }
 
+    /**
+     * When user swipes to delete, queue it up for deletion and put up a toast that includes an undo option
+     */
+    public void queueToRemove(final RecyclerView.ViewHolder viewHolder) {
+        final int adapterPosition = viewHolder.getAdapterPosition();
+        final Task task = mTasks.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        tasksToDelete.add(task);
+
+        Snackbar.make(((MainActivity) getContext()).findViewById(R.id.rvTasks), R.string.taskDelete, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, new View.OnClickListener() {
+                    public void onClick(View v) {
+                        mTasks.add(adapterPosition, task);
+                        notifyItemInserted(adapterPosition);
+                        tasksToDelete.remove(task);
+                    }
+                })
+                .show();
+    }
+
+    /**
+     * When user swipes to mark as done, queue it up and put up a toast that includes an undo option
+     */
+    public void queueToDone(final RecyclerView.ViewHolder viewHolder) {
+        final int adapterPosition = viewHolder.getAdapterPosition();
+        final Task task = mTasks.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        tasksToDone.add(task);
+
+        Snackbar.make(((MainActivity) getContext()).findViewById(R.id.rvTasks), R.string.taskDone, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, new View.OnClickListener() {
+                    public void onClick(View v) {
+                        mTasks.add(adapterPosition, task);
+                        notifyItemInserted(adapterPosition);
+                        tasksToDone.remove(task);
+                    }
+                })
+                .show();
+    }
+
+    public Context getContext() {
+        return this.mContext;
+    }
+
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
         return mTasks.size();
     }
 
-    public void remove(int position) {
-        Task task = mTasks.remove(position);
-        task.delete();
-        notifyItemRemoved(position);
-//        DeleteConfirmationAlertDialogFragment deleteConfirm = DeleteConfirmationAlertDialogFragment.newInstance(position);
-//        deleteConfirm.show(getFragmentManager(), "dialog");
+    public List<Task> getTasksToDelete() {
+        return tasksToDelete;
     }
 
-    public void setAsDone(int position) {
-        Task task = mTasks.get(position);
-        task.setStatus(Status.Done);
-        task.save();
-        // TODO see I can use notifyItemRemoved instead of notifyDataSetChanged
-        mTasks.clear();
-        mTasks.addAll(SQLite.select().from(Task.class).where(Task_Table.status.is(0)).queryList());
-        notifyDataSetChanged();
-
-        Snackbar.make(((MainActivity)getContext()).findViewById(R.id.rvTasks), R.string.markedDone, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo, ((MainActivity)getContext()).undoDoneBtnListener)
-                .show();
-    }
-
-
-
-    public Context getContext() {
-        return this.mContext;
+    public List<Task> getTasksToDone() {
+        return tasksToDone;
     }
 }

@@ -1,7 +1,5 @@
 package com.pjm284.simpletodo.models;
 
-import android.graphics.drawable.shapes.Shape;
-
 import com.pjm284.simpletodo.SimpleTodoDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -12,10 +10,6 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-/**
- * Created by pauljmin on 1/31/17.
- */
 
 @Table(database = SimpleTodoDatabase.class)
 public class Task extends BaseModel implements Serializable {

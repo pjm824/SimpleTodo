@@ -146,8 +146,6 @@ public class TaskDialogFragment extends DialogFragment {
 
     /**
      * Populates the fields in the fragment from given Task
-     *
-     * @param view
      */
     private void fillFields(View view) {
         // update subject field
@@ -160,16 +158,20 @@ public class TaskDialogFragment extends DialogFragment {
 
         // if priority is set, check the correct button
         if (priority != null) {
-            if (priority.getName().equals("Low")) {
-                rgPriority.check(R.id.btnPriorityLow);
-            } else if (priority.getName().equals("Medium")) {
-                rgPriority.check(R.id.btnPriorityMedium);
-            } else if (priority.getName().equals("High")) {
-                rgPriority.check(R.id.btnPriorityHigh);
+            switch (priority.getName()) {
+                case "Low":
+                    rgPriority.check(R.id.btnPriorityLow);
+                    break;
+                case "Medium":
+                    rgPriority.check(R.id.btnPriorityMedium);
+                    break;
+                case "High":
+                    rgPriority.check(R.id.btnPriorityHigh);
+                    break;
             }
         }
 
-        // set the datepicker
+        // set the date picker
         Calendar cal = this.task.getDueDate();
         dpDueDate = (DatePicker) view.findViewById(R.id.dpDueDate);
         dpDueDate.updateDate(cal.get(Calendar.YEAR),
@@ -179,8 +181,6 @@ public class TaskDialogFragment extends DialogFragment {
 
     /**
      * Set up priority radio group
-     *
-     * @param rg
      */
     private void priorityButtonsSetUp(RadioGroup rg) {
 
