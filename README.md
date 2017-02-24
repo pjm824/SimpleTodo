@@ -25,17 +25,17 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 * [X] Add a confirmation dialog for deleting tasks
-
-Hoping to implement the following features by due date:
-* [ ] Add a status field (todo, done)
-* [ ] Add a button to show done tasks
-* [ ] Change new task button to fab
-* [ ] Swipe for delete
+* [X] Add a status field (todo, done)
+* [X] Add a button to show done tasks
+* [X] Swipe to mark as done
+* [X] Swipe for delete
+* [X] Add snackbar toast with undo for deleting
+* [X] Add snackbar toast with undo for mark as done
 
 ## Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/iB7pSYl.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/ZFOXZZM.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
