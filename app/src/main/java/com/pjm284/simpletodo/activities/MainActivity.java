@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     TasksAdapter adapter;
     Button btnAddItem;
 
+    Menu optionsMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +135,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        optionsMenu = menu;
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /*
+     * returns true if the done view is currently on
+     */
+    public boolean doneViewOn() {
+        return optionsMenu.findItem(R.id.viewDone).isChecked();
     }
 
     // handle button activities

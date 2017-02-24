@@ -11,6 +11,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.pjm284.simpletodo.R;
+import com.pjm284.simpletodo.activities.MainActivity;
 import com.pjm284.simpletodo.adapters.TasksAdapter;
 
 
@@ -35,7 +36,7 @@ public class TaskTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        //Remove task
+        // Remove task
         if (direction == RIGHT) {
             mtaskAdapter.queueToRemove(viewHolder);
         } else if (direction == LEFT) { // mark task as done
@@ -87,5 +88,15 @@ public class TaskTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     private int convertDpToPx(int dp){
         return Math.round(dp * (mtaskAdapter.getContext().getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    @Override
+    public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        // if currently viewing done tasks, disable swipe to mark done
+        if (((MainActivity)this.mcontext).doneViewOn()) {
+            return ItemTouchHelper.RIGHT;
+        }
+
+        return super.getSwipeDirs(recyclerView, viewHolder);
     }
 }
